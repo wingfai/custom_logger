@@ -16,10 +16,15 @@ class CustomLogging:
         self.filename = filename
         self.__logger.setLevel(level)
 
+        # 配置 TimedRotatingFileHandler
         time_rotating_file_handler = logging.handlers.TimedRotatingFileHandler(
             self.path + self.filename, when='D', interval=1, backupCount=0)
+        # 设置 TimedRotatingFileHandler 日志文件后缀名称
+        time_rotating_file_handler.suffix = '%Y%m%d' + filename
+        # 配置 stream_handler
         stream_handler = logging.StreamHandler()
 
+        # 添加日志格式
         formatter = logging.Formatter(formatter)
         time_rotating_file_handler.setFormatter(formatter)
         stream_handler.setFormatter(formatter)
@@ -43,5 +48,5 @@ if __name__ == '__main__':
 
     while num1 < 15:
         num1 += 1
-        print('{} + {} = {}'.format (num1, num2, add(num1, num2)))
+        print('{} + {} = {}'.format(num1, num2, add(num1, num2)))
         logger.info('{} + {} = {}'.format(num1, num2, add(num1, num2)))
