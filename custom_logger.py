@@ -10,27 +10,28 @@ class CustomLogging:
             formatter: str = '%(asctime)s: %(levelname)s: %(name)s: %(message)s',
             level=logging.DEBUG
             ):
-        
+
         self.__logger = logging.getLogger()
         self.path = path
         self.filename = filename
         self.__logger.setLevel(level)
 
-        # 配置 TimedRotatingFileHandler
+        # 每 7 天（一星期）归档一次 log 文件
         time_rotating_file_handler = logging.handlers.TimedRotatingFileHandler(
-            self.path + self.filename, when='D', interval=1, backupCount=0)
-        # 设置 TimedRotatingFileHandler 日志文件后缀名称
-        time_rotating_file_handler.suffix = '%Y%m%d' + filename
-        # 配置 stream_handler
-        stream_handler = logging.StreamHandler()
+            self.path + self.filename, when='w6', interval=1, backupCount=0)
 
-        # 添加日志格式
-        formatter = logging.Formatter(formatter)
-        time_rotating_file_handler.setFormatter(formatter)
-        stream_handler.setFormatter(formatter)
+        # 这里进行判断，如果logger.handlers列表为空，则添加，否则，直接去写日志
+        if not self.__logger.handlers:
+            stream_handler = logging.StreamHandler()
 
-        self.__logger.addHandler(time_rotating_file_handler)
-        self.__logger.addHandler(stream_handler)
+            formatter = logging.Formatter(formatter)
+            time_rotating_file_handler.setFormatter(formatter)
+            stream_handler.setFormatter(formatter)
+
+            self.__logger.addHandler(time_rotating_file_handler)
+            self.__logger.addHandler(stream_handler)
+        else:
+            pass
 
     def get_logger(self):
         return self.__logger
